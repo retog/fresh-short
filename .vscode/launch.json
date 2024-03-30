@@ -13,8 +13,9 @@
         "runtimeExecutable": "/usr/local/bin/deno",
         "runtimeArgs": [
           "task",
-          "start"
+          "debug"
         ],
+        "envFile": "${workspaceFolder}/.env",
         "attachSimplePort": 9229
       }
     ]
