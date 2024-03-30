@@ -1,12 +1,13 @@
 import { Handlers, PageProps } from "$fresh/server.ts";
-import IconBrandGithubFilled from "https://deno.land/x/tabler_icons_tsx@0.0.3/tsx/brand-github-filled.tsx"
+import IconBrandGithubFilled from "https://deno.land/x/tabler_icons_tsx@0.0.6/tsx/brand-github-filled.tsx";
+import IconBrandXFilled from "https://deno.land/x/tabler_icons_tsx@0.0.6/tsx/brand-x-filled.tsx";
 import { State } from "./_middleware.ts";
 import { newShort } from "../utils/helper.ts";
 
 // deno-lint-ignore no-explicit-any
 export const handler: Handlers<any, State> = {
   GET(_req, ctx) {
-    return ctx.render({...ctx.state});
+    return ctx.render({ ...ctx.state });
   },
 
   async POST(req, ctx) {
@@ -24,7 +25,7 @@ export const handler: Handlers<any, State> = {
 
     return newShort(orginalUrl, ctx.state.user!.login);
   },
-}
+};
 
 export default function Home(props: PageProps) {
   return (
@@ -37,25 +38,50 @@ export default function Home(props: PageProps) {
           height="128"
           alt="the Fresh logo: a sliced lemon dripping with juice"
         />
-        <h1 class="text-3xl font-bold">Welcome to Fresh<span class="text-yellow-500">Short</span></h1>
+        <h1 class="text-3xl font-bold">
+          Welcome to Fresh<span class="text-yellow-500">Short</span>
+        </h1>
         <p class="my-5 text-xl">
           Elevate Your Links, Simplify Your Sharing!
         </p>
-        {
-          props.data.sessionId ? (
+        {props.data.sessionId
+          ? (
             <>
               <form method="POST">
-                <input type="text" name="original" class="px-3 py-2 bg-white rounded border(yellow-500 2)" placeholder="Come on..." />
-                <button type="submit" class="mt-3 px-3 py-2 bg-yellow-200 text-yellow-800 rounded hover:bg-yellow-300 active:bg-yellow-400">Short me</button>
+                <input
+                  type="text"
+                  name="original"
+                  class="px-3 py-2 bg-white rounded border(yellow-500 2)"
+                  placeholder="Come on..."
+                />
+                <button
+                  type="submit"
+                  class="mt-3 px-3 py-2 bg-yellow-200 text-yellow-800 rounded hover:bg-yellow-300 active:bg-yellow-400"
+                >
+                  Short me
+                </button>
               </form>
             </>
-          ) : (
-            <a href="/signin" class="bg-gray-800 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded-md shadow-md flex items-center">
-              <IconBrandGithubFilled class="w-6 h-6 inline-block mr-2" />
-              Sign in with GitHub
-            </a>
           )
-        }
+          : (
+            <div>
+              <a
+                href="/signin?with=github"
+                class="bg-gray-800 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded-md shadow-md flex items-center"
+              >
+                <IconBrandGithubFilled class="w-6 h-6 inline-block mr-2" />
+                Sign in with GitHub
+              </a>
+
+              <a
+                href="/signin?with=twitter"
+                class="bg-gray-800 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded-md shadow-md flex items-center"
+              >
+                <IconBrandXFilled class="w-6 h-6 inline-block mr-2" />
+                Sign in with X
+              </a>
+            </div>
+          )}
       </div>
     </div>
   );

@@ -3,6 +3,7 @@
   "tasks": {
     "check": "deno fmt --check && deno lint && deno check **/*.ts && deno check **/*.tsx",
     "start": "deno run -A --watch=static/,routes/ --unstable dev.ts",
+    "debug": "deno run --unstable-kv --inspect-wait -A dev.ts",
     "db:dump": "deno run --allow-read --allow-env --unstable tools/dump.ts",
     "db:reset": "deno run --allow-read --allow-env --unstable tools/reset_kv.ts",
     "build": "deno run -A --unstable dev.ts build",
@@ -35,7 +36,7 @@
     "twind": "https://esm.sh/twind@0.16.19",
     "twind/": "https://esm.sh/twind@0.16.19/",
     "$std/": "https://deno.land/std@0.193.0/",
-    "kv_oauth": "https://deno.land/x/deno_kv_oauth@v0.2.5/mod.ts"
+    "kv_oauth": "https://deno.land/x/deno_kv_oauth@v0.10.0/mod.ts"
   },
   "compilerOptions": {
     "jsx": "react-jsx",

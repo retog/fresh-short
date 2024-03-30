@@ -7,6 +7,8 @@ Started" guide here: https://fresh.deno.dev/docs/getting-started
 
 Make sure to install Deno: https://deno.land/manual/getting_started/installation
 
+Register the application at: https://github.com/settings/applications/new and set the environment variables GITHUB_CLIENT_ID and GITHUB_CLIENT_SECRET.
+
 Then start the project:
 
 ```

@@ -1,7 +1,12 @@
-export const kv = await Deno.openKv()
+export const kv = await Deno.openKv();
 
 export interface UserEntity {
-  login: string;
+  name?: string;
+  login: {
+    github?: string;
+    twitter?: string;
+    [index: string]: string | undefined;
+  };
   sessionId: string;
 }
 
@@ -12,14 +17,16 @@ export interface ShortEntity {
 }
 
 export async function createOrUpdateUser(user: UserEntity) {
-  const usersKey = ["users", user.login];
   const usersBySessionKey = ["users_by_session", user.sessionId];
 
-  const resp = await kv.atomic()
-    .set(usersKey, user)
-    .set(usersBySessionKey, user)
-    .commit();
-  
+  const operation = kv.atomic();
+  for (const provider in user.login) {
+    const login = user.login[provider] as string;
+    const usersKey = ["users", provider, login];
+    operation.set(usersKey, user);
+  }
+  operation.set(usersBySessionKey, user);
+  const resp = await operation.commit();
   if (!resp.ok) throw new Error(`Failed to create or update user: ${user}`);
 }
 
@@ -27,21 +34,27 @@ export async function deleteUserBySession(sessionId: string) {
   await kv.delete(["users_by_session", sessionId]);
 }
 
-export async function getUserBySession(sessionId: string): Promise<UserEntity | null> {
+export async function getUserBySession(
+  sessionId: string,
+): Promise<UserEntity | null> {
   const usersBySessionKey = ["users_by_session", sessionId];
-  const resp = await kv.get<UserEntity>(usersBySessionKey)
+  const resp = await kv.get<UserEntity>(usersBySessionKey);
   return resp.value;
 }
 
-export async function getUser(login: string) {
-  const usersKey = ["users", login];
-  const resp = await kv.get<UserEntity>(usersKey)
+export async function getUserByLogin(provider: string, login: string) {
+  const usersKey = ["users", provider, login];
+  const resp = await kv.get<UserEntity>(usersKey);
   return resp.value;
 }
 
 export async function createShort(short: ShortEntity) {
   const shortKey = ["shorts", short.shortUrl];
-  const shortByUserLoginKey = ["shorts_by_user", short.userLogin, short.shortUrl];
+  const shortByUserLoginKey = [
+    "shorts_by_user",
+    short.userLogin,
+    short.shortUrl,
+  ];
 
   const res = await kv.atomic()
     .check({ key: shortKey, versionstamp: null })
@@ -50,7 +63,7 @@ export async function createShort(short: ShortEntity) {
     .set(shortByUserLoginKey, short)
     .commit();
 
-    if (!res.ok) throw new Error(`Failed to create short: ${short}`);
+  if (!res.ok) throw new Error(`Failed to create short: ${short}`);
 }
 
 export async function deleteShort(short: ShortEntity) {
@@ -67,7 +80,7 @@ export async function deleteShort(short: ShortEntity) {
 
 export async function getShort(shortUrl: string) {
   const shortKey = ["shorts", shortUrl];
-  const resp = await kv.get<ShortEntity>(shortKey)
+  const resp = await kv.get<ShortEntity>(shortKey);
   return resp.value;
 }
 
