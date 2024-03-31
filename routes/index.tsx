@@ -23,7 +23,7 @@ export const handler: Handlers<any, State> = {
       });
     }
 
-    return newShort(orginalUrl, ctx.state.user!.login);
+    return newShort(orginalUrl, ctx.state.user!.id);
   },
 };
 

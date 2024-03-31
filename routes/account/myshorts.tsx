@@ -10,12 +10,12 @@ export const handler: Handlers<any, State> = {
     const form = await req.formData();
     const orginalUrl = form.get("original")?.toString();
 
-    return newShort(orginalUrl, ctx.state.user!.login);
+    return newShort(orginalUrl, ctx.state.user!.id);
   },
 
   async DELETE(req, ctx) {
     const short = await req.json() as ShortEntity
-    if (ctx.state.user!.login === short.userLogin) {
+    if (ctx.state.user!.id === short.userLogin) {
       await deleteShort(short);
     }
     
@@ -25,7 +25,8 @@ export const handler: Handlers<any, State> = {
 
 export default async function ShortsPage(req: Request, ctx: RouteContext<any, State>) {
   const error = new URL(req.url).searchParams.get("error");
-  const shorts = await getShortsByUser(ctx.state.user!.login);
+
+  const shorts = await getShortsByUser(ctx.state.user!.id);
 
   const url = new URL(req.url)
   const hostname = `${url.protocol}//${url.host}`

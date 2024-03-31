@@ -42,6 +42,7 @@ export const twitter = {
           login: {twitter: twitterUser.data.username},
           name: twitterUser.data.name,
           sessionId,
+          id: "twitter:"+twitterUser.data.username
         };
         await createOrUpdateUser(newUser);
       }
@@ -73,6 +74,7 @@ export const github = {
       const newUser: UserEntity = {
         login: {github: githubUser.login},
         sessionId,
+        id: "github:"+githubUser.login
       };
       await createOrUpdateUser(newUser);
     }

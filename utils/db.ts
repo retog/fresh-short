@@ -1,13 +1,14 @@
 export const kv = await Deno.openKv();
 
-export interface UserEntity {
+export abstract class UserEntity {
   name?: string;
-  login: {
+  abstract login: {
     github?: string;
     twitter?: string;
     [index: string]: string | undefined;
   };
-  sessionId: string;
+  abstract sessionId: string;
+  abstract id: string;
 }
 
 export interface ShortEntity {
